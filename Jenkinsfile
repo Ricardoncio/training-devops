@@ -56,8 +56,11 @@ pipeline {
                 container('podman') {
                     script {
                         sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
-                        sh 'podman login --get-login docker.io'
-                        sh 'podman --version'
+                        sh '''
+                            set -x
+                            podman login --get-login docker.io
+                            podman --version
+                        '''
                     }
                 }
                 container('kubectl') {
@@ -70,7 +73,7 @@ pipeline {
                             sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
                             sh 'tar -zxvf helm.tar.gz'
                             sh 'mv linux-amd64/helm /usr/local/bin/helm'
-                            
+
                             sh 'helm version'
                         }
                         
@@ -84,9 +87,9 @@ pipeline {
                 container('podman') {
                     script {
                         echo 'Building imágenes de Angular y Spring Boot...'
-                        sh 'podman build -t $DOCKER_REGISTRY/training-angular:latest -f ./training-angular/dockerfiles/Dockerfile .'
+                        sh 'podman build -t $IMAGE_ORG/training-angular:latest -f ./training-angular/dockerfiles/Dockerfile .'
                         sh 'podman --version'
-                        sh 'podman build -t $DOCKER_REGISTRY/training-spring-boot:latest ./training-spring-boot'
+                        sh 'podman build -t $IMAGE_ORG/training-spring-boot:latest ./training-spring-boot'
                         sh 'podman --version'
                     }
                 }
