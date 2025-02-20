@@ -54,8 +54,10 @@ pipeline {
             steps {
                 container('podman') {
                     script {
+                        sh 'podman login --get-login docker.io'
                         sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
-                        sh 'podman --version'
+                        sh 'podman login --get-login docker.io'
+                        sh 'echo podman --version'
                     }
                 }
                 container('kubectl') {
@@ -64,7 +66,7 @@ pipeline {
                         sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
                         sh 'tar -zxvf helm.tar.gz'
                         sh 'mv linux-amd64/helm /usr/local/bin/helm'
-                        sh 'helm version'
+                        sh 'echo helm version'
                     }
                 }
             }
