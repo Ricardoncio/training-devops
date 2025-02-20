@@ -47,7 +47,8 @@ pipeline {
         KUBE_NAMESPACE = "training"
         HELM_RELEASE = "training-release"
         KUBERNETES_CLUSTER_CRED_ID = 'training-config'
-        CONTAINER_REGISTRY_CRED = credentials("docker-hub-$IMAGE_ORG")
+        CONTAINER_REGISTRY_CRED_USR = credentials("docker-hub-$IMAGE_ORG").username
+        CONTAINER_REGISTRY_CRED_PWD = credentials("docker-hub-$IMAGE_ORG").password
     }
 
     stages {
