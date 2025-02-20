@@ -96,10 +96,12 @@ pipeline {
 
     post {
         always {
-            script {
-                echo 'Eliminando recursos de Kubernetes...'
-                sh 'helm uninstall $HELM_RELEASE -n $KUBE_NAMESPACE || true'
-                sh 'kubectl delete namespace $KUBE_NAMESPACE || true'
+            container('kubectl') {
+                script {
+                    echo 'Eliminando recursos de Kubernetes...'
+                    sh 'helm uninstall $HELM_RELEASE -n $KUBE_NAMESPACE || true'
+                    sh 'kubectl delete namespace $KUBE_NAMESPACE || true'
+                }
             }
         }
     }
