@@ -10,33 +10,33 @@ pipeline {
         - name: jdk
           image: docker.io/eclipse-temurin:20.0.1_9-jdk
           command:
-            - "/bin/sh"
-            - "-c"
-            - "echo hola && sleep infinity"
+              - "/bin/sh"
+              - "-c"
+              - "echo hola && sleep infinity"
           tty: true
           volumeMounts:
-            - name: m2-cache
-            mountPath: /root/.m2
+              - name: m2-cache
+                mountPath: /root/.m2
         - name: podman
           image: quay.io/containers/podman:v4.5.1
           command:
-            - "/bin/sh"
-            - "-c"
-            - "echo hola && sleep infinity"
+              - "/bin/sh"
+              - "-c"
+              - "echo hola && sleep infinity"
           tty: true
           securityContext:
-            runAsUser: 0
-            privileged: true
+              runAsUser: 0
+              privileged: true
         - name: kubectl
           image: docker.io/bitnami/kubectl:1.27.3
           command:
-            - "/bin/sh"
-            - "-c"
-            - "echo hola && sleep infinity"
+              - "/bin/sh"
+              - "-c"
+              - "echo hola && sleep infinity"
           tty: true
           securityContext:
-            runAsUser: 0
-            privileged: true
+              runAsUser: 0
+              privileged: true
     '''
         }
     }
@@ -96,11 +96,13 @@ pipeline {
 
     post {
         always {
-            container('kubectl') {
-                script {
-                    echo 'Eliminando recursos de Kubernetes...'
-                    sh 'helm uninstall $HELM_RELEASE -n $KUBE_NAMESPACE || true'
-                    sh 'kubectl delete namespace $KUBE_NAMESPACE || true'
+            node('c11-8g2y61etqeq') {
+                container('kubectl') {
+                    script {
+                        echo 'Eliminando recursos de Kubernetes...'
+                        sh 'helm uninstall $HELM_RELEASE -n $KUBE_NAMESPACE || true'
+                        sh 'kubectl delete namespace $KUBE_NAMESPACE || true'
+                    }
                 }
             }
         }
