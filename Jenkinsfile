@@ -68,6 +68,7 @@ pipeline {
                     script {
                         withKubeConfig([credentialsId: "$KUBERNETES_CLUSTER_CRED_ID"]) {
                             echo 'Instalando Curl y Helm...'
+                            sh 'cat /etc/os-release'
 
                             sh 'apt-get update && apt-get install -y curl || apk add --no-cache curl'
 
