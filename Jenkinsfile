@@ -44,7 +44,6 @@ pipeline {
     environment {
         IMAGE_ORG = "rsolo719"
         CONTAINER_REGISTRY = "docker.io"
-        CONTAINER_REGISTRY_CRED = credentials("docker-hub-$IMAGE_ORG")
         KUBE_NAMESPACE = "training"
         HELM_RELEASE = "training-release"
         KUBERNETES_CLUSTER_CRED_ID = 'training-config'
@@ -55,7 +54,9 @@ pipeline {
             steps {
                 container('podman') {
                     script {
-                        sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub-' + IMAGE_ORG, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                            sh "podman login $CONTAINER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD"
+                        }
                         sh '''
                             set -x
                             podman login --get-login docker.io
@@ -65,7 +66,7 @@ pipeline {
                 }
                 container('kubectl') {
                     script {
-                        withKubeConfig([credentialsId: "$KUBERNETES_CLUSTER_CRED_ID"]) {
+                        withKubeConfig([credentialsId: KUBERNETES_CLUSTER_CRED_ID]) {
                             echo 'Instalando Curl y Helm...'
 
                             sh 'apt-get update && apt-get install -y curl || apk add --no-cache curl'
