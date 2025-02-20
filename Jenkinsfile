@@ -51,16 +51,14 @@ pipeline {
 
     stages {
         stage('Prepare enviroment') {
-            container('podman') {
-                steps {
+            steps {
+                container('podman') {
                     script {
                         sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
                         sh 'podman --version'
                     }
                 }
-            }
-            container('kubectl') {
-                steps {
+                container('kubectl') {
                     script {
                         echo 'Instalando Helm...'
                         sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
@@ -123,4 +121,5 @@ pipeline {
             }
         }
     }
+
 }
