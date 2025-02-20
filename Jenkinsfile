@@ -52,18 +52,22 @@ pipeline {
     stages {
         stage('Prepare enviroment') {
             container('podman') {
-                script {
-                    sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
-                    sh 'podman --version'
+                steps {
+                    script {
+                        sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
+                        sh 'podman --version'
+                    }
                 }
             }
             container('kubectl') {
-                script {
-                    echo 'Instalando Helm...'
-                    sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
-                    sh 'tar -zxvf helm.tar.gz'
-                    sh 'mv linux-amd64/helm /usr/local/bin/helm'
-                    sh 'helm version'
+                steps {
+                    script {
+                        echo 'Instalando Helm...'
+                        sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
+                        sh 'tar -zxvf helm.tar.gz'
+                        sh 'mv linux-amd64/helm /usr/local/bin/helm'
+                        sh 'helm version'
+                    }
                 }
             }
         }
