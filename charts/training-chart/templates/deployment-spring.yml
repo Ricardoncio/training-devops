@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: training-spring-boot
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: training-spring-boot
+  replicas: {{ .Values.spring.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: training-spring-boot
+    spec:
+      containers:
+      - name: training-spring-boot
+        image: "{{ .Values.spring.image.repository }}:{{ .Values.spring.image.tag }}"
+        imagePullPolicy: {{ .Values.spring.image.pullPolicy }}
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+        - name: acr-access

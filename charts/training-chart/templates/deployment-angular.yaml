@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: training-angular
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: training-angular
+  replicas: {{ .Values.angular.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: training-angular
+    spec:
+      containers:
+      - name: training-angular
+        image: "{{ .Values.angular.image.repository }}:{{ .Values.angular.image.tag }}"
+        imagePullPolicy: {{ .Values.angular.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: acr-access

@@ -1,0 +1,29 @@
+namespace: training
+
+imagePullSecrets: acr-access
+
+angular:
+  replicaCount: 1
+  image:
+    repository: rsolo719/training-angular
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    host: angular.local
+
+spring:
+  replicaCount: 1
+  image:
+    repository: rsolo719/training-spring-boot
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    host: spring.local

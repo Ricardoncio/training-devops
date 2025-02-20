@@ -1,0 +1,24 @@
+{{- if .Values.spring.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: training-spring-boot
+  namespace: {{ .Values.namespace }}
+spec:
+  defaultBackend:
+    service:
+      name: training-spring-boot
+      port:
+        number: 8080
+  rules:
+  - host: {{ .Values.spring.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: training-spring-boot
+            port:
+              number: {{ .Values.spring.service.port }}
+{{- end }}

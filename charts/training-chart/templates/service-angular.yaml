@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: training-angular
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.angular.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.angular.service.port }}
+    targetPort: 80
+    protocol: TCP
+  selector:
+    deployment-label-key: training-angular
