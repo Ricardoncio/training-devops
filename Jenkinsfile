@@ -54,7 +54,7 @@ pipeline {
             steps {
                 container('podman') {
                     script {
-                        withCredentials([usernamePassword(credentialsId: 'docker-hub-' + $IMAGE_ORG, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: "docker-hub-$IMAGE_ORG", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh "podman login $CONTAINER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD"
                         }
                         sh '''
