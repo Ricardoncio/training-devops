@@ -74,18 +74,22 @@ pipeline {
             }
         }
 
-        container('kubectl') {
-            script {
-                echo "Instalando Helm..."
-                sh '''
-                curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz
-                tar -zxvf helm.tar.gz
-                mv linux-amd64/helm /usr/local/bin/helm
-                helm version
-                '''
-                echo "Deployment en Kubernetes..."
-                sh 'kubectl create namespace $KUBE_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -'
-                sh 'helm upgrade --install $HELM_RELEASE ./training-chart -n $KUBE_NAMESPACE'
+        stage('Deploy en Kubernetes con Helm') {
+            steps {
+                container('kubectl') {
+                    script {
+                        echo "Instalando Helm..."
+                        sh '''
+                        curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz
+                        tar -zxvf helm.tar.gz
+                        mv linux-amd64/helm /usr/local/bin/helm
+                        helm version
+                        '''
+                        echo "Deployment en Kubernetes..."
+                        sh 'kubectl create namespace $KUBE_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -'
+                        sh 'helm upgrade --install $HELM_RELEASE ./training-chart -n $KUBE_NAMESPACE'
+                    }
+                }
             }
         }
     }
