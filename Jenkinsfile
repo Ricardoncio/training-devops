@@ -52,18 +52,18 @@ pipeline {
     stages {
         stage('Prepare enviroment') {
             steps {
-                container('podman') {
-                    script {
-                        withCredentials([usernamePassword(credentialsId: 'docker-hub-' + IMAGE_ORG, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                            sh "podman login $CONTAINER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD"
-                        }
-                        sh '''
-                            set -x
-                            podman login --get-login docker.io
-                            podman --version
-                        '''
-                    }
-                }
+                // container('podman') {
+                //     script {
+                //         withCredentials([usernamePassword(credentialsId: 'docker-hub-' + IMAGE_ORG, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                //             sh "podman login $CONTAINER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD"
+                //         }
+                //         sh '''
+                //             set -x
+                //             podman login --get-login docker.io
+                //             podman --version
+                //         '''
+                //     }
+                // }
                 container('kubectl') {
                     script {
                         withKubeConfig([credentialsId: KUBERNETES_CLUSTER_CRED_ID]) {
