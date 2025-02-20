@@ -42,19 +42,41 @@ pipeline {
     }
 
     environment {
-        DOCKER_REGISTRY = "rsolo719"
+        IMAGE_ORG = "rsolo719"
+        CONTAINER_REGISTRY = "docker.io"
+        CONTAINER_REGISTRY_CRED = credentials("docker-hub-$IMAGE_ORG")
         KUBE_NAMESPACE = "training"
         HELM_RELEASE = "training-release"
     }
 
     stages {
+        stage('Prepare enviroment') {
+            container('podman') {
+                script {
+                    sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
+                    sh 'podman --version'
+                }
+            }
+            container('kubectl') {
+                script {
+                    echo 'Instalando Helm...'
+                    sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
+                    sh 'tar -zxvf helm.tar.gz'
+                    sh 'mv linux-amd64/helm /usr/local/bin/helm'
+                    sh 'helm version'
+                }
+            }
+        }
+
         stage('Build Angular y Spring Boot') {
             steps {
                 container('podman') {
                     script {
-                        echo 'Building Angular y Spring Boot...'
+                        echo 'Building imágenes de Angular y Spring Boot...'
                         sh 'podman build -t $DOCKER_REGISTRY/training-angular:latest -f ./training-angular/dockerfiles/Dockerfile .'
+                        sh 'podman --version'
                         sh 'podman build -t $DOCKER_REGISTRY/training-spring-boot:latest ./training-spring-boot'
+                        sh 'podman --version'
                     }
                 }
             }
@@ -65,10 +87,8 @@ pipeline {
                 container('podman') {
                     script {
                         echo 'pushin a Docker Hub...'
-                        withDockerRegistry([credentialsId: 'docker-hub-$DOCKER_REGISTRY', url: 'https://hub.docker.com/']) {
-                            sh 'podman push $DOCKER_REGISTRY/training-angular:latest'
-                            sh 'podman push $DOCKER_REGISTRY/training-spring-boot:latest'
-                        }
+                        sh 'podman push $IMAGE_ORG/training-angular:latest'
+                        sh 'podman push $IMAGE_ORG/training-spring-boot:latest'
                     }
                 }
             }
@@ -78,14 +98,6 @@ pipeline {
             steps {
                 container('kubectl') {
                     script {
-                        echo 'Instalando Helm...'
-                        sh '''
-                        curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz
-                        tar -zxvf helm.tar.gz
-                        mv linux-amd64/helm /usr/local/bin/helm
-                        helm version
-                        '''
-                        echo 'Deployment en Kubernetes...'
                         sh 'kubectl create namespace $KUBE_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -'
                         sh 'helm upgrade --install $HELM_RELEASE ./training-chart -n $KUBE_NAMESPACE'
                     }
