@@ -54,7 +54,7 @@ pipeline {
             steps {
                 // container('podman') {
                 //     script {
-                //         withCredentials([usernamePassword(credentialsId: 'docker-hub-' + IMAGE_ORG, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                //         withCredentials([usernamePassword(credentialsId: 'docker-hub-' + $IMAGE_ORG, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                 //             sh "podman login $CONTAINER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD"
                 //         }
                 //         sh '''
@@ -66,7 +66,7 @@ pipeline {
                 // }
                 container('kubectl') {
                     script {
-                        withKubeConfig([credentialsId: KUBERNETES_CLUSTER_CRED_ID]) {
+                        withKubeConfig([credentialsId: "$KUBERNETES_CLUSTER_CRED_ID"]) {
                             echo 'Instalando Curl y Helm...'
 
                             sh 'apt-get update && apt-get install -y curl || apk add --no-cache curl'
