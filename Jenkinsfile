@@ -47,6 +47,7 @@ pipeline {
         CONTAINER_REGISTRY_CRED = credentials("docker-hub-$IMAGE_ORG")
         KUBE_NAMESPACE = "training"
         HELM_RELEASE = "training-release"
+        KUBERNETES_CLUSTER_CRED_ID = 'training-kubeconfig'
     }
 
     stages {
@@ -62,6 +63,9 @@ pipeline {
                 }
                 container('kubectl') {
                     script {
+                        withKubeConfig([credentialsId: "$KUBERNETES_CLUSTER_CRED_ID"]) {
+                            sh 'kubectl version'
+                        }
                         echo 'Instalando Helm...'
                         sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
                         sh 'tar -zxvf helm.tar.gz'
