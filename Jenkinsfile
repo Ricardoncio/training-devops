@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
 		    echo "Building Angular y Spring Boot..."
-                    sh 'podman build -t $DOCKER_REGISTRY/training-angular:latest f- ./training-angular/dockerfiles/Dockerfile .'
-                    sh 'podman build -t $DOCKER_REGISTRY/training-spring-boot:latest ./training-spring-boot'
+                    sh 'docker build -t $DOCKER_REGISTRY/training-angular:latest f- ./training-angular/dockerfiles/Dockerfile .'
+                    sh 'docker build -t $DOCKER_REGISTRY/training-spring-boot:latest ./training-spring-boot'
                 }
             }
         }
@@ -23,8 +23,8 @@ pipeline {
                 script {
 		    echo "pushin a Docker Hub..."
                     withDockerRegistry([credentialsId: 'docker-hub-$DOCKER_REGISTRY', url: 'https://hub.docker.com/']) {
-                        sh 'podman push $DOCKER_REGISTRY/training-angular:latest'
-                        sh 'podman push $DOCKER_REGISTRY/training-spring-boot:latest'
+                        sh 'docker push $DOCKER_REGISTRY/training-angular:latest'
+                        sh 'docker push $DOCKER_REGISTRY/training-spring-boot:latest'
                     }
                 }
             }
