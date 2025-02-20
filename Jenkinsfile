@@ -53,24 +53,28 @@ pipeline {
     stages {
         stage('Prepare enviroment') {
             steps {
-                container('podman') {
-                    script {
-                        sh 'podman login --get-login docker.io'
-                        sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
-                        sh 'podman login --get-login docker.io'
-                        sh 'echo podman --version'
+                step {
+                    container('podman') {
+                        script {
+                            sh 'podman login --get-login docker.io'
+                            sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW"
+                            sh 'podman login --get-login docker.io'
+                            sh 'echo podman --version'
+                        }
                     }
                 }
-                container('kubectl') {
-                    script {
-                        withKubeConfig([credentialsId: "$KUBERNETES_CLUSTER_CRED_ID"]) {
-                            sh 'kubectl version'
+                step {
+                    container('kubectl') {
+                        script {
+                            withKubeConfig([credentialsId: "$KUBERNETES_CLUSTER_CRED_ID"]) {
+                                sh 'kubectl version'
+                            }
+                            echo 'Instalando Helm...'
+                            sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
+                            sh 'tar -zxvf helm.tar.gz'
+                            sh 'mv linux-amd64/helm /usr/local/bin/helm'
+                            sh 'echo helm version'
                         }
-                        echo 'Instalando Helm...'
-                        sh 'curl https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz -o helm.tar.gz'
-                        sh 'tar -zxvf helm.tar.gz'
-                        sh 'mv linux-amd64/helm /usr/local/bin/helm'
-                        sh 'echo helm version'
                     }
                 }
             }
