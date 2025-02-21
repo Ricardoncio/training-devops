@@ -130,18 +130,4 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            node('c11-8g2y61etqeq') {
-                container('kubectl') {
-                    script {
-                        echo 'Eliminando recursos de Kubernetes...'
-                        sh 'helm uninstall $HELM_RELEASE -n $KUBE_NAMESPACE || true'
-                        sh 'kubectl delete namespace $KUBE_NAMESPACE || true'
-                    }
-                }
-            }
-        }
-    }
-
 }
