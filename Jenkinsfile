@@ -5,6 +5,9 @@ pipeline {
             yaml '''
     apiVersion: v1
     kind: Pod
+    metadata:
+        labels:
+            app: jenkins-agent
     spec:
         containers:
             - name: jdk
