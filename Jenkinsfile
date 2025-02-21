@@ -57,7 +57,7 @@ pipeline {
                     script {
                         sh '''
                             curl -v docker.io
-                            podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_USR -p $CONTAINER_REGISTRY_PSW
+                            podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW
                         '''
                         sh '''
                             set -x
