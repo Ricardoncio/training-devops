@@ -6,37 +6,37 @@ pipeline {
     apiVersion: v1
     kind: Pod
     spec:
-    containers:
-        - name: jdk
-          image: docker.io/eclipse-temurin:20.0.1_9-jdk
-          command:
-              - "/bin/sh"
-              - "-c"
-              - "echo hola && sleep infinity"
-          tty: true
-          volumeMounts:
-              - name: m2-cache
-                mountPath: /root/.m2
-        - name: podman
-          image: quay.io/containers/podman:v4.5.1
-          command:
-              - "/bin/sh"
-              - "-c"
-              - "echo hola && sleep infinity"
-          tty: true
-          securityContext:
-              runAsUser: 0
-              privileged: true
-        - name: kubectl
-          image: docker.io/bitnami/kubectl:1.27.3
-          command:
-              - "/bin/sh"
-              - "-c"
-              - "echo hola && sleep infinity"
-          tty: true
-          securityContext:
-              runAsUser: 0
-              privileged: true
+        containers:
+            - name: jdk
+            image: docker.io/eclipse-temurin:20.0.1_9-jdk
+            command:
+                - "/bin/sh"
+                - "-c"
+                - "echo hola && sleep infinity"
+            tty: true
+            volumeMounts:
+                - name: m2-cache
+                    mountPath: /root/.m2
+            - name: podman
+            image: quay.io/containers/podman:v4.5.1
+            command:
+                - "/bin/sh"
+                - "-c"
+                - "echo hola && sleep infinity"
+            tty: true
+            securityContext:
+                runAsUser: 0
+                privileged: true
+            - name: kubectl
+            image: docker.io/bitnami/kubectl:1.27.3
+            command:
+                - "/bin/sh"
+                - "-c"
+                - "echo hola && sleep infinity"
+            tty: true
+            securityContext:
+                runAsUser: 0
+                privileged: true
     '''
         }
     }
