@@ -47,8 +47,7 @@ pipeline {
         KUBE_NAMESPACE = "training"
         HELM_RELEASE = "training-release"
         KUBERNETES_CLUSTER_CRED_ID = 'training-config'
-        CONTAINER_REGISTRY_CRED_USR = credentials("docker-hub-rsolo719".username)
-        CONTAINER_REGISTRY_CRED_PWD = credentials('docker-hub-rsolo719'.password)
+        CONTAINER_REGISTRY_CRED = credentials("docker-hub-rsolo719")
     }
 
     stages {
@@ -56,7 +55,9 @@ pipeline {
             steps {
                 container('podman') {
                     script {
-                        sh "podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PWD"
+                        sh '''
+                            podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_USR -p $CONTAINER_REGISTRY_PSW
+                        '''
                         sh '''
                             set -x
                             podman login --get-login docker.io
