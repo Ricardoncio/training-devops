@@ -59,11 +59,13 @@ pipeline {
                             set -x
                             curl -v docker.io
                             podman login $CONTAINER_REGISTRY -u $CONTAINER_REGISTRY_CRED_USR -p $CONTAINER_REGISTRY_CRED_PSW
+                            set +x
                         '''
                         sh '''
                             set -x
                             podman login --get-login docker.io
                             podman --version
+                            set +x
                         '''
                     }
                 }
